@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  build:
+    desc: プロジェクト全体をビルド
+    cmds:
+      - go build ./...
+
+  test:
+    desc: 全テストを実行
+    cmds:
+      - go test ./...
+
+  fmt:
+    desc: goimportsでコードを整形
+    cmds:
+      - goimports -w .
+
+  fmt:check:
+    desc: goimportsの整形差分を確認
+    cmds:
+      - test -z "$(goimports -l .)"
+
+  vet:
+    desc: go vetで静的解析
+    cmds:
+      - go vet ./...
+
+  staticcheck:
+    desc: staticcheckで静的解析
+    cmds:
+      - staticcheck ./...
+
+  lint:
+    desc: 全静的解析を実行（fmt:check, vet, staticcheck）
+    cmds:
+      - task: fmt:check
+      - task: vet
+      - task: staticcheck
+
+  check:
+    desc: lint + test を一括実行
+    cmds:
+      - task: lint
+      - task: test
